@@ -33,11 +33,8 @@ The script:
 * Grants Reader permissions of the identity to the storage account
 * Deploys them to Azure
 * Uploads a set of files into the created storage account
+* Opens a browser to show the data served back by ASP .NET.
 
-You will be promted to log into Azure the first time you execute the script. After a short delay,
+You will be prompted to log into Azure the first time you execute the script. After a short delay,
 Farmer will generate and deploy both the ARM template and the deployed application into the provisioned
 App Service.
-
-#### 4. Upload data
-* Browse to the service i.e. https://<webappname>.azurewebsites.net/blobs. After a short delay,
-you will see a JSON formatted list of all the uploaded files.
