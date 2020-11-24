@@ -16,11 +16,11 @@ to rapidly construct application topologies via Azure Resource Manager (ARM) tem
 ## Instructions
 #### 1. Publish the web application to a local folder
 ```cmd
-dotnet publish -c Release -o deploy
+dotnet publish -c Release -o publish
 ```
 
 #### 2. Configure the Farmer template
-Update the `storageAccountName` and `webAppName` values to strings unique to you.
+Open the `Infrastructure.fsx` file and update the `storageAccountName` and `webAppName` values to strings unique to you.
 
 #### 3. Execute the script
 * Highlight the contents of the script

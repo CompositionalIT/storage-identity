@@ -7,14 +7,16 @@ open System.Diagnostics
 
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__ 
 
+/// UPDATE THESE TWO NAMES TO SOMETHING UNIQUE TO YOU
 let storageAccountName = "demoidentitystorage"
 let webAppName = "demoidentityweb"
 
+// Create and configure a Farmer template of a web app and storage account
 let myWeb = webApp {
     name webAppName
     system_identity
     setting "storage-account-name" storageAccountName
-    zip_deploy "deploy"
+    zip_deploy "publish"
     run_from_package
 }
 
@@ -43,4 +45,4 @@ for file in [ "readme.md"; "Program.fs"; "Infrastructure.fsx" ] do
     deployFile file
 
 // Finally, open a browser that navigates to the web app to show the seed data via the web app.
-Process.Start $"https://{webAppName}.azurewebsites.net/blobs"
+Process.Start $"https://{webAppName}.azurewebsites.net/blobs" |> ignore
