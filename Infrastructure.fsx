@@ -7,9 +7,12 @@ open System.Diagnostics
 
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__ 
 
-/// UPDATE THESE TWO NAMES TO SOMETHING UNIQUE TO YOU
-let storageAccountName = "demoidentitystorage"
-let webAppName = "demoidentityweb"
+/// UPDATE baseName TO SOMETHING UNIQUE TO YOU
+
+let baseName = "farmeriddemojong"
+let storageAccountName = baseName + "storage"
+let webAppName = baseName + "app"
+let rg = baseName + "rg"
 
 // Create and configure a Farmer template of a web app and storage account
 let myWeb = webApp {
@@ -32,7 +35,7 @@ let template = arm {
 }
 
 // Deploy the template to the "identity-demo" resource group
-template |> Deploy.execute "identity-demo" []
+template |> Deploy.execute rg []
 
 // Prime the storage account with some seed data
 let deployFile (fileName:string) =

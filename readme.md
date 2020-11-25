@@ -20,11 +20,11 @@ dotnet publish -c Release -o publish
 ```
 
 #### 2. Configure the Farmer template
-Open the `Infrastructure.fsx` file and update the `storageAccountName` and `webAppName` values to strings unique to you.
+Open the `Infrastructure.fsx` file and update the `baseName` value to something that is unique to you.  The resource group, storage account, and web app names will be generated from this value.
 
 #### 3. Execute the script
 * Highlight the contents of the script
-* Execute the code (`ALT` + `ENTER` in VS or Code)
+* Execute the code (`ALT` + `ENTER` in VS or VS Code)
 
 The script:
 
