@@ -20,7 +20,7 @@ dotnet publish webapp -c Release -o publish
 ```
 
 #### 2. Configure the Farmer template
-Open the `infrastructure/Program.fs` file and update the `storageAccountName` and `webAppName` values to strings unique to you.
+Open the `infrastructure/Program.fs` file and update the `baseName` value to something that is unique to you. The resource group, storage account, and web app names will be generated from this value.
 
 #### 3. Run the Farmer application
 ```cmd
