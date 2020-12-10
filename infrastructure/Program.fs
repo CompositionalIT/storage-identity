@@ -1,11 +1,8 @@
-#r @"nuget:Farmer"
-
 open Farmer
 open Farmer.Builders
-open System
 open System.Diagnostics
 
-Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
 /// UPDATE THESE TWO NAMES TO SOMETHING UNIQUE TO YOU
 let storageAccountName = "demoidentitystorage"
@@ -16,7 +13,7 @@ let myWeb = webApp {
     name webAppName
     system_identity
     setting "storage-account-name" storageAccountName
-    zip_deploy "publish"
+    zip_deploy "../publish"
     run_from_package
 }
 
@@ -32,17 +29,16 @@ let template = arm {
 }
 
 // Deploy the template to the "identity-demo" resource group
-template |> Deploy.execute "identity-demo" []
+template |> Deploy.execute "farmer-identity-demo" [] |> ignore
 
 // Prime the storage account with some seed data
-let deployFile (fileName:string) =
-    printfn $"Uploading {fileName}..."
-    Deploy.Az.az $"storage blob upload --account-name {storageAccountName} --container-name data --name {fileName} --file {fileName}"
+for file in [ "Program.fs"; "Infrastructure.fsproj" ] do
+    printfn "Uploading %s..." file
+    Deploy.Az.az (sprintf "storage blob upload --account-name %s --container-name data --name %s --file %s" storageAccountName file file)
     |> Result.get
     |> ignore
 
-for file in [ "readme.md"; "Program.fs"; "Infrastructure.fsx" ] do
-    deployFile file
-
 // Finally, open a browser that navigates to the web app to show the seed data via the web app.
-Process.Start $"https://{webAppName}.azurewebsites.net/blobs" |> ignore
+ProcessStartInfo (sprintf "https://%s.azurewebsites.net/blobs" webAppName, UseShellExecute = true)
+|> Process.Start
+|> ignore
