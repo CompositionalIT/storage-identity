@@ -42,6 +42,6 @@ for file in [ "Program.fs"; "Infrastructure.fsproj" ] do
     |> ignore
 
 // Finally, open a browser that navigates to the web app to show the seed data via the web app.
-ProcessStartInfo (sprintf "https://%s.azurewebsites.net/blobs" webAppName, UseShellExecute = true)
+ProcessStartInfo (sprintf "https://%s.azurewebsites.net/blobs/data" webAppName, UseShellExecute = true)
 |> Process.Start
 |> ignore
