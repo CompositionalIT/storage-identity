@@ -7,9 +7,9 @@ System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 /// UPDATE baseName TO SOMETHING UNIQUE TO YOU
 let baseName = "farmerisaac"
 
-let storageAccountName = baseName + "storage"
-let webAppName = baseName + "-app"
-let rg = baseName + "-rg"
+let storageAccountName = $"{baseName}storage"
+let webAppName = $"{baseName}-app"
+let rg = $"{baseName}-rg"
 
 // Create and configure a Farmer template of a web app and storage account
 let myWeb = webApp {
@@ -36,12 +36,12 @@ template |> Deploy.execute rg [] |> ignore
 
 // Prime the storage account with some seed data
 for file in [ "Program.fs"; "Infrastructure.fsproj" ] do
-    printfn "Uploading %s..." file
-    Deploy.Az.az (sprintf "storage blob upload --account-name %s --container-name data --name %s --file %s" storageAccountName file file)
+    printfn $"Uploading {file}..."
+    Deploy.Az.az $"storage blob upload --account-name {storageAccountName} --container-name data --name {file} --file {file}" 
     |> Result.get
     |> ignore
 
 // Finally, open a browser that navigates to the web app to show the seed data via the web app.
-ProcessStartInfo (sprintf "https://%s.azurewebsites.net/blobs/data" webAppName, UseShellExecute = true)
+ProcessStartInfo ($"https://{webAppName}.azurewebsites.net/blobs/data", UseShellExecute = true)
 |> Process.Start
 |> ignore

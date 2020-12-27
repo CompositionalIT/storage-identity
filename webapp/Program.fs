@@ -8,12 +8,12 @@ open System
 // Connect to Azure Storage using the default azure credentials (which includes system identity).
 let storageAccountName = Environment.GetEnvironmentVariable "storage-account-name"
 let client =
-    let accountUri = storageAccountName |> sprintf "https://%s.blob.core.windows.net" |> Uri
+    let accountUri = Uri $"https://{storageAccountName}.blob.core.windows.net"
     BlobServiceClient (accountUri, DefaultAzureCredential ())
 
 /// Lists all blob names in a container
 let listBlobs container =
-    let view = html [ ] [
+    html [ ] [
         GiraffeViewEngine.head [] [
             link [ _rel "stylesheet"; _href "https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" ]
         ]
@@ -22,7 +22,7 @@ let listBlobs container =
             div [ _class "hero-body" ] [
                 div [ _class "container" ] [
                     h1 [ _class "title" ] [ str "Farmer Azure Managed Identity Blob Viewer" ]
-                    p [ _class "subtitle" ] [ str (sprintf "Connected to %s/%s." storageAccountName container) ]
+                    p [ _class "subtitle" ] [ str $"Connected to {storageAccountName}/{container}." ]
                 ]
             ]
         ]
@@ -39,8 +39,7 @@ let listBlobs container =
                     ]
                     tbody [] [
                         // Connect to Azure Storage and list all blobs
-                        let container = client.GetBlobContainerClient container
-                        for page in container.GetBlobs().AsPages() do
+                        for page in client.GetBlobContainerClient(container).GetBlobs().AsPages() do
                         for blob in page.Values do
                             tr [] [
                                 td [] [ str blob.Name ]
@@ -53,9 +52,7 @@ let listBlobs container =
         ]
     ]
 
-    htmlView view
-
-let routes = routef "/blobs/%s" listBlobs
+let routes = routef "/blobs/%s" (listBlobs >> htmlView)
 
 let theApp = application {
     use_router routes
