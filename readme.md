@@ -11,7 +11,7 @@ to rapidly construct application topologies via Azure Resource Manager (ARM) tem
 
 ## Components
 * Web Application: An ASP .NET Core web application running in F# using the Saturn and Giraffe libraries.
-* Farmer Template: An F# script that creates all resources to Azure and deploys the application into it in a pre-configured state.
+* Farmer Template: An F# console application that creates and configures all Azure resources and deploys the application into them in a ready-to-run state.
 
 ## Instructions
 #### 1. Publish the web application to a local folder
