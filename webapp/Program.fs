@@ -5,14 +5,16 @@ open Giraffe.GiraffeViewEngine
 open Saturn
 open System
 
-// Connect to Azure Storage using the default azure credentials (which includes system identity).
+// Get the storage account name from an environment variable - will be set by Farmer during ARM deploy.
 let storageAccountName = Environment.GetEnvironmentVariable "storage-account-name"
-let client =
+
+// Connect to Azure Storage using the default azure credentials (which includes the system identity).
+let blobClient =
     let accountUri = Uri $"https://{storageAccountName}.blob.core.windows.net"
     BlobServiceClient (accountUri, DefaultAzureCredential ())
 
-/// Lists all blob names in a container
-let listBlobs container =
+/// Creates a HTML tree that displays a table of all files in a container. 
+let listBlobs containerName =
     html [ ] [
         GiraffeViewEngine.head [] [
             link [ _rel "stylesheet"; _href "https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" ]
@@ -22,7 +24,7 @@ let listBlobs container =
             div [ _class "hero-body" ] [
                 div [ _class "container" ] [
                     h1 [ _class "title" ] [ str "Farmer Azure Managed Identity Blob Viewer" ]
-                    p [ _class "subtitle" ] [ str $"Connected to {storageAccountName}/{container}." ]
+                    p [ _class "subtitle" ] [ str $"Connected to {storageAccountName}/{containerName}." ]
                 ]
             ]
         ]
@@ -39,12 +41,12 @@ let listBlobs container =
                     ]
                     tbody [] [
                         // Connect to Azure Storage and list all blobs
-                        for page in client.GetBlobContainerClient(container).GetBlobs().AsPages() do
-                        for blob in page.Values do
+                        for blobPage in blobClient.GetBlobContainerClient(containerName).GetBlobs().AsPages() do
+                        for blobItem in blobPage.Values do
                             tr [] [
-                                td [] [ str blob.Name ]
-                                td [] [ str (string blob.Properties.ContentLength) ]
-                                td [] [ str (string blob.Properties.CreatedOn) ]
+                                td [] [ str blobItem.Name ]
+                                td [] [ str (string blobItem.Properties.ContentLength) ]
+                                td [] [ str (string blobItem.Properties.CreatedOn) ]
                             ]
                     ]
                 ]
@@ -52,10 +54,12 @@ let listBlobs container =
         ]
     ]
 
-let routes = routef "/blobs/%s" (listBlobs >> htmlView)
+/// A parameterised route that shows all blobs in a container as an HTML response.
+let displayBlobs = routef "/blobs/%s" (listBlobs >> htmlView)
 
+/// An ASP .NET Core application.
 let theApp = application {
-    use_router routes
+    use_router displayBlobs
     disable_diagnostics
 }
 
