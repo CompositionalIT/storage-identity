@@ -15,14 +15,15 @@ let rg = $"{baseName}-rg"
 let myWeb = webApp {
     name webAppName
     system_identity
-    setting "storage-account-name" storageAccountName
+    operating_system OS.Windows
+    setting "StorageAccountName" storageAccountName
     zip_deploy "../publish"
     run_from_package
 }
 
 let storage = storageAccount {
     name storageAccountName
-    add_blob_container "data"
+    add_private_container "data"
     grant_access myWeb.SystemIdentity Roles.StorageBlobDataReader
 }
 

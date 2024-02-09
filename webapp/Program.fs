@@ -6,7 +6,7 @@ open Saturn
 open System
 
 // Get the storage account name from an environment variable - will be set by Farmer during ARM deploy.
-let storageAccountName = Environment.GetEnvironmentVariable "storage-account-name"
+let storageAccountName = Environment.GetEnvironmentVariable "StorageAccountName"
 
 // Connect to Azure Storage using the default azure credentials (which includes the system identity).
 let blobClient =
